@@ -63,7 +63,7 @@ public class calculator extends Application {
         display.setStyle("-fx-background-color: black; -fx-text-fill: white;");
         display.setEditable(false);
         display.setAlignment(Pos.CENTER_RIGHT);
-        display.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Set the max size to maximum allowed values
+        display.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); 
         return display;
     }
     
@@ -73,8 +73,8 @@ public class calculator extends Application {
         for (int i = 0; i < buttons.length; i++) {
             Button button = new Button(String.valueOf(i));
             button.setStyle("-fx-base: black; -fx-text-fill: white;");
-            button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Set the max size to maximum allowed values
-            int number = i; // Create a new variable and assign the value of i to it
+            button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); 
+            int number = i;
             button.setOnAction(event -> display.appendText(String.valueOf(number)));
             buttons[i] = button;
         }
@@ -86,8 +86,8 @@ public class calculator extends Application {
         for (int i = 0; i < buttons.length; i++) {
             Button button = new Button(OPERATORS[i]);
             button.setStyle("-fx-base: black; -fx-text-fill: white;");
-            button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Set the max size to maximum allowed values
-            String operator = OPERATORS[i]; // Create a new variable and assign the value of OPERATORS[i] to it
+            button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); 
+            String operator = OPERATORS[i]; 
             button.setOnAction(event -> display.appendText(operator));
             buttons[i] = button;
         }
@@ -97,7 +97,7 @@ public class calculator extends Application {
     private Button createEqualsButton() {
         Button button = new Button("=");
         button.setStyle("-fx-base: black; -fx-text-fill: white;");
-        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Set the max size to maximum allowed values
+        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); 
         button.setOnAction(event -> calculateResult());
         return button;
     }
@@ -105,7 +105,7 @@ public class calculator extends Application {
     private Button createClearButton() {
         Button button = new Button("C");
         button.setStyle("-fx-base: black; -fx-text-fill: white;");
-        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); // Set the max size to maximum allowed values
+        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE); 
         button.setOnAction(event -> display.clear());
         return button;
     }
@@ -116,10 +116,10 @@ public class calculator extends Application {
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
 
-        // Set the preferred size of the GridPane
+
         grid.setPrefSize(300, 400);
 
-        // Set the constraints for columns and rows
+   
         for (int i = 0; i < 4; i++) {
             ColumnConstraints column = new ColumnConstraints();
             column.setPercentWidth(25);
