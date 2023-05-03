@@ -9,6 +9,12 @@ import javafx.stage.Stage;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class calculator extends Application {
     private TextField display;
@@ -16,6 +22,7 @@ public class calculator extends Application {
     private Button[] operatorButtons;
     private Button equalsButton;
     private Button clearButton;
+    private Button backspaceButton;
     private static final String[] OPERATORS = { "+", "-", "*", "/" };
 
     public static void main(String[] args) {
@@ -28,6 +35,8 @@ public class calculator extends Application {
         operatorButtons = createOperatorButtons();
         equalsButton = createEqualsButton();
         clearButton = createClearButton();
+        Button backspaceButton = createBackspaceButton();
+
 
         GridPane grid = createGridPane();
         grid.add(display, 0, 0, 4, 1);
@@ -45,6 +54,7 @@ public class calculator extends Application {
 
         grid.add(numberButtons[0], 1, 4);
         grid.add(clearButton, 0, 4);
+        grid.add(backspaceButton, 0, 0);
         grid.add(equalsButton, 2, 4);
 
         for (int i = 0; i < operatorButtons.length; i++) {
@@ -110,6 +120,15 @@ public class calculator extends Application {
         return button;
     }
 
+    private Button createBackspaceButton() {
+        Button button = new Button("<");
+        button.setStyle("-fx-base: black; -fx-text-fill: white;");
+        button.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        button.setOnAction(event -> deleteLastCharacter());
+        return button;
+    }
+    
+
     private GridPane createGridPane() {
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -117,7 +136,7 @@ public class calculator extends Application {
         grid.setAlignment(Pos.CENTER);
 
 
-        grid.setPrefSize(300, 400);
+        grid.setPrefSize(600, 600);
 
    
         for (int i = 0; i < 4; i++) {
@@ -141,11 +160,20 @@ public class calculator extends Application {
             ScriptEngineManager manager = new ScriptEngineManager();
             ScriptEngine engine = manager.getEngineByName("JavaScript");
             Object result = engine.eval(input);
-            display.setText(result.toString());
+            String resultString = result.toString();
+            display.setText(resultString);
+            saveResultToHistoryFile(resultString, input);
         } catch (ScriptException e) {
             display.setText("Error");
         }
     }
+
+    private void deleteLastCharacter() {
+        String currentText = display.getText();
+        if (!currentText.isEmpty()) {
+            display.setText(currentText.substring(0, currentText.length() - 1));
+        }
+    }    
 
     private void handleKeyPress(KeyEvent event) {
         Button targetButton = null;
@@ -154,8 +182,10 @@ public class calculator extends Application {
             targetButton = numberButtons[Character.getNumericValue(key)];
         } else if (event.getCode().toString().equals("ENTER")) {
             targetButton = equalsButton;
-        } else if (event.getCode().toString().equals("BACK_SPACE") || event.getCode().toString().equals("DELETE")) {
+        } else if (event.getCode().toString().equals("SPACE") || event.getCode().toString().equals("DELETE")) {
             targetButton = clearButton;
+        } else if (event.getCode().toString().equals("BACK_SPACE")) {
+            targetButton = backspaceButton;
         } else {
             for (Button button : operatorButtons) {
                 if (button.getText().charAt(0) == key) {
@@ -169,4 +199,24 @@ public class calculator extends Application {
             event.consume();
         }
     }
+    
+
+    private void saveResultToHistoryFile(String result, String input) {
+        Path historyFilePath = Paths.get("history.txt");
+    
+        try {
+            if (!Files.exists(historyFilePath)) {
+                Files.createFile(historyFilePath);
+            }
+    
+            try (BufferedWriter writer = Files.newBufferedWriter(historyFilePath, StandardOpenOption.APPEND)) {
+                writer.write(input + " = ");
+                writer.write(result);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing in history file: " + e.getMessage());
+        }
+    }
+    
 }
